@@ -24,10 +24,10 @@ The accelerator is designed to minimize off-chip memory access by leveraging:
 .
 ├── hls/
 │   ├── bnn_stream_accel.cpp
-│   ├── bnn_stream_accel.h      # 여기서 ../include/weights_94_packed_channel.h를 참조
+│   ├── bnn_stream_accel.h      
 │   └── params.h
 ├── training/
-│   └── learning.ipynb          # weights_94_packed_channel.h를 생성하는 로직 포함
+│   └── learning.ipynb   
 ├── pynq/
 │   ├── bitstream/
 │   └── BNN_LineBuffer_FIFO.ipynb
@@ -51,3 +51,4 @@ Copy the `.bit`, `.hwh` files and `pynq/inference.ipynb` to your PYNQ-Z2 board. 
 ## References
 
 - BinaryNet: Training Deep Neural Networks with Weights and Activations Constrained to +1 or -1.
+
