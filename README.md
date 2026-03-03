@@ -21,8 +21,21 @@ The accelerator is designed to minimize off-chip memory access by leveraging:
 - **Key Optimization**: Achieved significant speedup using manual line buffering compared to naive implementations.
 
 ## 📂 Repository Structure
-(위에서 제안한 구조를 여기에 작성하세요)
-
+```text
+.
+├── hls/
+│   ├── bnn_stream_accel.cpp
+│   ├── bnn_stream_accel.h
+│   └── params.h
+├── training/
+│   └── learning.ipynb
+├── pynq/
+│   ├── bitstream/
+│   └── BNN_LineBuffer_FIFO.ipynb
+├── include/
+│   └── weights_94_packed_channel.h  # 최적화된 채널 패킹 가중치
+└── README.md
+```
 ## 💻 Usage
 
 ### 1. Training & Export
@@ -37,4 +50,5 @@ Open Vivado HLS and import files in the `hls/` directory.
 Copy the `.bit`, `.hwh` files and `pynq/inference.ipynb` to your PYNQ-Z2 board. Run the notebook to see the accelerator in action!
 
 ## 📜 References
+
 - BinaryNet: Training Deep Neural Networks with Weights and Activations Constrained to +1 or -1.
