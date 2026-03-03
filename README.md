@@ -65,6 +65,38 @@ Dimensions are fixed with compile-time parameters to allow stronger static optim
 
 This is a hardware-oriented implementation strategy, not a direct floating-point software model port.
 
+---
+
+## Novelty
+
+1) **1-bit {-1, +1} quantization mapped to {0, 1} in hardware**  
+   All layers operate in binary form using `ap_uint<1>` to minimize memory footprint.  
+   Multiplication is replaced with **XNOR + popcount**, significantly improving computational efficiency and speed.
+
+2) **Removal of redundant arithmetic via threshold-based comparison**  
+   Expressions such as `2 * popcount - N` are eliminated.  
+   Instead, a single threshold comparison is used, reducing arithmetic overhead and simplifying hardware logic.
+
+3) **Input-channel pre-bitpacking**  
+   Input channels are pre-packed before convolution.  
+   - No inner unpacking loop is required during computation.  
+   - Achieves an effect similar to full loop unrolling without increasing resource usage.  
+   - Enables efficient FIFO transfer (e.g., 32-bit packed streaming per cycle).  
+   - Eliminates runtime unpacking overhead.
+
+4) **DATAFLOW and stream-based pipelining (FIFO architecture)**  
+   Computation starts immediately when a patch is generated and is streamed forward.  
+   - `#pragma HLS DATAFLOW` and streaming FIFOs enable deep pipelining.  
+   - Achieves **II = 1** in steady state.  
+   - After pipeline warm-up, one pixel (feature element) is produced per cycle.
+
+5) **Bitwise majority-based pooling (3-out-of-4 logic)**  
+   Average pooling is replaced with a 3-of-4 majority vote in the binary domain.  
+   This reduces arithmetic complexity while preserving decision behavior in BNN.
+
+6) **Bitwidth-optimized loop variables and indices**  
+   Loop counters and control variables use the minimum required bitwidth (e.g., `ap_uint<4>` instead of `int`).  
+   This significantly reduces MUX complexity and overall control logic resource usage.
 
 ## Repository structure
 
@@ -110,38 +142,5 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
 - Place `.bit` and `.hwh` on the board.
 - Run `pynq/BNN_LineBuffer_FIFO.ipynb` for overlay loading and DMA inference.
 - Check output accuracy and timing.
-
----
-
-## Novelty
-
-1) **1-bit {-1, +1} quantization mapped to {0, 1} in hardware**  
-   All layers operate in binary form using `ap_uint<1>` to minimize memory footprint.  
-   Multiplication is replaced with **XNOR + popcount**, significantly improving computational efficiency and speed.
-
-2) **Removal of redundant arithmetic via threshold-based comparison**  
-   Expressions such as `2 * popcount - N` are eliminated.  
-   Instead, a single threshold comparison is used, reducing arithmetic overhead and simplifying hardware logic.
-
-3) **Input-channel pre-bitpacking**  
-   Input channels are pre-packed before convolution.  
-   - No inner unpacking loop is required during computation.  
-   - Achieves an effect similar to full loop unrolling without increasing resource usage.  
-   - Enables efficient FIFO transfer (e.g., 32-bit packed streaming per cycle).  
-   - Eliminates runtime unpacking overhead.
-
-4) **DATAFLOW and stream-based pipelining (FIFO architecture)**  
-   Computation starts immediately when a patch is generated and is streamed forward.  
-   - `#pragma HLS DATAFLOW` and streaming FIFOs enable deep pipelining.  
-   - Achieves **II = 1** in steady state.  
-   - After pipeline warm-up, one pixel (feature element) is produced per cycle.
-
-5) **Bitwise majority-based pooling (3-out-of-4 logic)**  
-   Average pooling is replaced with a 3-of-4 majority vote in the binary domain.  
-   This reduces arithmetic complexity while preserving decision behavior in BNN.
-
-6) **Bitwidth-optimized loop variables and indices**  
-   Loop counters and control variables use the minimum required bitwidth (e.g., `ap_uint<4>` instead of `int`).  
-   This significantly reduces MUX complexity and overall control logic resource usage.
 
 
