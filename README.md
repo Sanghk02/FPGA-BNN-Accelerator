@@ -20,6 +20,26 @@ This project addresses those issues with four design choices:
 3. AXI-streamed layer pipeline for continuous dataflow,
 4. line buffer and FIFO-based window processing to reduce off-chip accesses.
 
+## Repository structure
+
+```text
+.
+├── hls/
+│   ├── bnn_stream_accel.h           # stream/data types, interfaces, popcount utilities
+│   ├── bnn_stream_accel.cpp         # binarization, pooling, FC, top-level BNN
+│   └── params.h                     # model and feature-map parameters
+├── include/
+│   └── weights_94_packed_channel.h  # channel-packed trained weights for hardware
+├── training/
+│   └── learning.ipynb               # QAT training and weight export
+├── pynq/
+│   ├── BNN_LineBuffer_FIFO.ipynb    # overlay load, DMA inference, measurements
+│   └── bitstream/
+│       ├── bnn_accel.bit
+│       └── bnn_accel.hwh
+└── README.md
+```
+
 ## End-to-end workflow
 
 The repository is intended as one connected flow:
@@ -65,9 +85,8 @@ Dimensions are fixed with compile-time parameters to allow stronger static optim
 
 This is a hardware-oriented implementation strategy, not a direct floating-point software model port.
 
----
 
-## Novelty
+### Novelty
 
 1) **1-bit {-1, +1} quantization mapped to {0, 1} in hardware**  
    All layers operate in binary form using `ap_uint<1>` to minimize memory footprint.  
@@ -98,26 +117,6 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
    Loop counters and control variables use the minimum required bitwidth (e.g., `ap_uint<4>` instead of `int`).  
    This significantly reduces MUX complexity and overall control logic resource usage.
 
-## Repository structure
-
-```text
-.
-├── hls/
-│   ├── bnn_stream_accel.h           # stream/data types, interfaces, popcount utilities
-│   ├── bnn_stream_accel.cpp         # binarization, pooling, FC, top-level BNN
-│   └── params.h                     # model and feature-map parameters
-├── include/
-│   └── weights_94_packed_channel.h  # channel-packed trained weights for hardware
-├── training/
-│   └── learning.ipynb               # QAT training and weight export
-├── pynq/
-│   ├── BNN_LineBuffer_FIFO.ipynb    # overlay load, DMA inference, measurements
-│   └── bitstream/
-│       ├── bnn_accel.bit
-│       └── bnn_accel.hwh
-└── README.md
-```
-
 ---
 
 ## How to run
@@ -142,5 +141,6 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
 - Place `.bit` and `.hwh` on the board.
 - Run `pynq/BNN_LineBuffer_FIFO.ipynb` for overlay loading and DMA inference.
 - Check output accuracy and timing.
+
 
 
