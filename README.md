@@ -71,7 +71,7 @@ Based on `hls/params.h`:
 - Conv1: 16 output channels, 3x3
 - Conv2: 32 output channels, 3x3
 - Conv3: 32 output channels, 3x3
-- 2x2 pooling
+- 2x2 avg_pooling
 - FC: 10 classes
 
 Dimensions are fixed with compile-time parameters to allow stronger static optimization during HLS synthesis.
@@ -141,6 +141,7 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
 - Place `.bit` and `.hwh` on the board.
 - Run `pynq/BNN_LineBuffer_FIFO.ipynb` for overlay loading and DMA inference.
 - Check output accuracy and timing.
+
 
 
 
