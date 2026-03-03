@@ -86,7 +86,7 @@ Dimensions are fixed with compile-time parameters to allow stronger static optim
 This is a hardware-oriented implementation strategy, not a direct floating-point software model port.
 
 
-### Novelty
+## Novelty
 
 1) **1-bit {-1, +1} quantization mapped to {0, 1} in hardware**  
    All layers operate in binary form using `ap_uint<1>` to minimize memory footprint.  
@@ -141,6 +141,7 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
 - Place `.bit` and `.hwh` on the board.
 - Run `pynq/BNN_LineBuffer_FIFO.ipynb` for overlay loading and DMA inference.
 - Check output accuracy and timing.
+
 
 
 
