@@ -4,6 +4,8 @@ This repository implements a streaming Binary Neural Network (BNN) accelerator f
 
 The main goal is not only to run a BNN, but to make the design hardware-efficient: reduce memory traffic, simplify arithmetic, and maximize throughput with a stream-first architecture.
 
+## System Architecture
+![Top Level Diagram](./docs/top_diagram.png)
 
 ## What this project is trying to solve
 
@@ -24,16 +26,22 @@ This project addresses those issues with four design choices:
 
 ```text
 .
+├── docs/
+│   ├── final_implementation_results.png           # Actual resource utilization and timing results after Vivado implementation
+│   ├── hls_synthesis_report(estimates)            # Preliminary resource and latency estimates from Vivado HLS synthesis
+│   ├── results_RTX3090                            # Accuracy and latency metrics on NVIDIA RTX 3090 (Baseline)
+│   ├── results_ours                               # Inference accuracy and latency results of our custom accelerator
+│   └── top_diagram                                # System-level block diagram showing PS-PL integration and data flow
 ├── hls/
-│   ├── bnn_stream_accel.h           # stream/data types, interfaces, popcount utilities
-│   ├── bnn_stream_accel.cpp         # binarization, pooling, FC, top-level BNN
-│   └── params.h                     # model and feature-map parameters
+│   ├── bnn_stream_accel.h                         # stream/data types, interfaces, popcount utilities
+│   ├── bnn_stream_accel.cpp                       # binarization, pooling, FC, top-level BNN
+│   └── params.h                                   # model and feature-map parameters
 ├── include/
-│   └── weights_94_packed_channel.h  # channel-packed trained weights for hardware
+│   └── weights_94_packed_channel.h                # channel-packed trained weights for hardware
 ├── training/
-│   └── learning.ipynb               # QAT training and weight export
+│   └── learning.ipynb                             # QAT training and weight export
 ├── pynq/
-│   ├── BNN_LineBuffer_FIFO.ipynb    # overlay load, DMA inference, measurements
+│   ├── BNN_LineBuffer_FIFO.ipynb                  # overlay load, DMA inference, measurements
 │   └── bitstream/
 │       ├── bnn_accel.bit
 │       └── bnn_accel.hwh
@@ -141,6 +149,7 @@ This is a hardware-oriented implementation strategy, not a direct floating-point
 - Place `.bit` and `.hwh` on the board.
 - Run `pynq/BNN_LineBuffer_FIFO.ipynb` for overlay loading and DMA inference.
 - Check output accuracy and timing.
+
 
 
 
